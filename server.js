@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
-const app = require('./app')
+const app = require("./app");
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });
+
+const DB = process.env.DATABASE.replace(
+  "<password>",
+  process.env.DATABASE_PASSWORD
+);
 
 mongoose
   .connect(process.env.DATABASE_LOCAL, {
@@ -10,8 +15,9 @@ mongoose
     useFindAndModify: false,
     useUnifiedTopology: true
   })
-  .then(con => {
-    console.log("Connected to database...");
+  .then(() => console.log("Connected to database..."))
+  .catch(err => {
+    console.log(Error, err.message);
   });
 
 const port = process.env.PORT;

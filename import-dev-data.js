@@ -4,15 +4,21 @@ dotenv.config({ path: "./config.env" });
 const City = require("./cityModel.js");
 const fs = require("fs");
 
+const DB = process.env.DATABASE.replace(
+  "<password>",
+  process.env.DATABASE_PASSWORD
+);
+
 mongoose
-  .connect(process.env.DATABASE_LOCAL, {
+  .connect(DB, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true
   })
-  .then(con => {
-    console.log("Connected to database");
+  .then(() => console.log("Connected to database..."))
+  .catch(err => {
+    console.log(Error, err.message);
   });
 
 const cities = JSON.parse(
