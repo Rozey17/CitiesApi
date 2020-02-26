@@ -3,9 +3,15 @@ const catchAsync = require("./catchAsync");
 const AppError = require("./appError");
 
 exports.getAll = catchAsync(async (req, res) => {
-  const cities = await City.find();
+  console.log(req.query);
+  const queryObj = { ...req.query };
+  const excludedFields = ["page", "sort", "limit", "fields"];
+  excludedFields.forEach(el => delete queryObj[el]);
+  const query = City.find(queryObj);
+  const cities = await query;
   res.status(200).json({
     status: "success",
+    result: cities.length,
     cities: { cities }
   });
 });
@@ -21,32 +27,18 @@ exports.getCity = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.update = async (req, res) => {
-  try {
-    const city = await City.findByIdAndUpdate(req.params.id, req.body); //ne pas oublier req.body
-    res.status(200).json({
-      status: "success",
-      city: { city }
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err
-    });
-  }
-};
+exports.update = catchAsync(async (req, res) => {
+  const city = await City.findByIdAndUpdate(req.params.id, req.body); //ne pas oublier req.body
+  res.status(200).json({
+    status: "success",
+    city: { city }
+  });
+});
 
-exports.delete = async (req, res) => {
-  try {
-    const city = await City.findByIdAndDelete(req.params.id);
-    res.status(200).json({
-      status: "success",
-      message: "City deleted successfully."
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err
-    });
-  }
-};
+exports.delete = catchAsync(async (req, res) => {
+  const city = await City.findByIdAndDelete(req.params.id);
+  res.status(200).json({
+    status: "success",
+    message: "City deleted successfully."
+  });
+});

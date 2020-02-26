@@ -9,6 +9,8 @@ const DB = process.env.DATABASE.replace(
   process.env.DATABASE_PASSWORD
 );
 
+const DB_LOCAL = process.env.DATABASE_LOCAL;
+
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
@@ -16,10 +18,10 @@ mongoose
     useFindAndModify: false,
     useUnifiedTopology: true
   })
-  .then(() => console.log("Connected to database..."))
-  .catch(err => {
-    console.log(Error, err.message);
-  });
+  .then(() => console.log("Connected to database..."));
+// .catch(err => {
+//   console.log(Error, err.message);
+// });
 
 const cities = JSON.parse(
   fs.readFileSync(`${__dirname}/countries.json`, "utf-8")
